@@ -11,5 +11,7 @@ type Task struct {
 	CategoryID  uint
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	User		User
+	Category	Category
 }
 
