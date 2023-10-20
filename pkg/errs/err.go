@@ -33,3 +33,19 @@ func NewInternalServerError(message string) Error {
 		ErrError:   "INTERNAL_SERVER_ERROR",
 	}
 }
+
+func NewBadRequest(message string) Error {
+	return &ErrorData{
+		ErrMessage: message,
+		ErrStatus: http.StatusBadRequest,
+		ErrError: "BAD_REQUEST",
+	}
+}
+
+func NewUnprocessableEntityResponse(message string) Error {
+	return &ErrorData{
+		ErrMessage: message,
+		ErrStatus: http.StatusUnprocessableEntity,
+		ErrError: "INVALID_REQUEST_BODY",
+	}
+}
