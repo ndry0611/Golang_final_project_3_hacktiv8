@@ -24,6 +24,7 @@ func StartApp() {
 	userRoute := route.Group("/users")
 	{
 		userRoute.POST("/register", userHandler.CreateUser)
+		userRoute.POST("/login", userHandler.Login)
 	}
 
 	route.Run(":" + config.GetAppConfig().Port)

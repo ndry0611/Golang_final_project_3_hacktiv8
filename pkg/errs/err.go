@@ -49,3 +49,19 @@ func NewUnprocessableEntityResponse(message string) Error {
 		ErrError: "INVALID_REQUEST_BODY",
 	}
 }
+
+func NewNotFoundError(message string) Error {
+	return &ErrorData{
+		ErrMessage: message,
+		ErrStatus: http.StatusNotFound,
+		ErrError: "NOT_FOUND",
+	}
+}
+
+func NewUnauthenticatedError(message string) Error {
+	return &ErrorData{
+		ErrMessage: message,
+		ErrStatus: http.StatusUnauthorized,
+		ErrError: "NOT_AUTHORIZED",
+	}
+}

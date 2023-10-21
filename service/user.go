@@ -14,6 +14,7 @@ type userService struct {
 
 type UserService interface {
 	CreateUser(userPayload *dto.NewUserRequest) (*dto.NewUserResponse, errs.Error)
+	Login(loginPayload *dto.NewLoginRequest) (*dto.NewLoginResponse, errs.Error)
 }
 
 func NewUserService(userRepo user_repository.Repository) UserService {
@@ -39,6 +40,30 @@ func (us *userService) CreateUser(userPayload *dto.NewUserRequest) (*dto.NewUser
 		FullName:  createdUser.FullName,
 		Email:     createdUser.Email,
 		CreatedAt: createdUser.CreatedAt,
+	}
+	return &response, nil
+}
+
+func (us *userService) Login(loginPayload *dto.NewLoginRequest) (*dto.NewLoginResponse, errs.Error) {
+	validateErr := helpers.ValidateStruct(loginPayload)
+	if validateErr != nil {
+		return nil, validateErr
+	}
+
+	user, err := us.UserRepo.FindOneUserByEmail(loginPayload.Email)
+	if err != nil {
+		return nil, err
+	}
+	var response dto.NewLoginResponse
+	passwordMatch := helpers.ComparePass([]byte(user.Password), []byte(loginPayload.Password))
+	if !passwordMatch {
+		return nil, errs.NewUnauthenticatedError("wrong password")
+	} else {
+		token, generateErr := helpers.GenerateToken(int(user.ID), user.Email, user.Role)
+		if generateErr != nil {
+			return nil, errs.NewInternalServerError(err.Error())
+		}
+		response.Token = token
 	}
 	return &response, nil
 }

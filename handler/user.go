@@ -31,3 +31,20 @@ func (uh *userHandler) CreateUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, response)
 }
+
+func (uh *userHandler) Login(ctx *gin.Context) {
+	var loginPayload dto.NewLoginRequest
+
+	if err := ctx.ShouldBindJSON(&loginPayload); err != nil {
+		errBindJson := errs.NewUnprocessableEntityResponse("invalid json request body")
+		ctx.AbortWithStatusJSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	resp, err := uh.userService.Login(&loginPayload)
+	if err != nil {
+		ctx.AbortWithStatusJSON(err.Status(), err)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
