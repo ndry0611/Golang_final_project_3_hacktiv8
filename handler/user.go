@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type userHandler struct {
@@ -42,6 +43,26 @@ func (uh *userHandler) Login(ctx *gin.Context) {
 	}
 
 	resp, err := uh.userService.Login(&loginPayload)
+	if err != nil {
+		ctx.AbortWithStatusJSON(err.Status(), err)
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}
+
+func (uh *userHandler) UpdateUser(ctx *gin.Context) {
+	var userPayload dto.UpdateUserRequest
+
+	if err := ctx.ShouldBindJSON(&userPayload); err != nil {
+		errBindJson := errs.NewUnprocessableEntityResponse("invalid json request body")
+		ctx.AbortWithStatusJSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	jwtClaims := ctx.MustGet("user").(jwt.MapClaims)
+	userPayload.ID = uint(jwtClaims["id"].(float64))
+
+	resp, err := uh.userService.UpdateUser(&userPayload)
 	if err != nil {
 		ctx.AbortWithStatusJSON(err.Status(), err)
 		return

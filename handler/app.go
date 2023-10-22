@@ -3,6 +3,7 @@ package handler
 import (
 	"final_project_3/infrastructure/config"
 	"final_project_3/infrastructure/database"
+	"final_project_3/pkg/middlewares"
 	"final_project_3/repository/user_repository/user_repo"
 	"final_project_3/service"
 
@@ -25,6 +26,11 @@ func StartApp() {
 	{
 		userRoute.POST("/register", userHandler.CreateUser)
 		userRoute.POST("/login", userHandler.Login)
+
+		userRoute.Use(middlewares.Authentication())
+		{
+			userRoute.PUT("/update-account", userHandler.UpdateUser)
+		}
 	}
 
 	route.Run(":" + config.GetAppConfig().Port)

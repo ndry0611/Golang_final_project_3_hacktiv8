@@ -15,6 +15,7 @@ type userService struct {
 type UserService interface {
 	CreateUser(userPayload *dto.NewUserRequest) (*dto.NewUserResponse, errs.Error)
 	Login(loginPayload *dto.NewLoginRequest) (*dto.NewLoginResponse, errs.Error)
+	UpdateUser(userPayload *dto.UpdateUserRequest) (*dto.UpdateUserResponse, errs.Error)
 }
 
 func NewUserService(userRepo user_repository.Repository) UserService {
@@ -67,3 +68,27 @@ func (us *userService) Login(loginPayload *dto.NewLoginRequest) (*dto.NewLoginRe
 	}
 	return &response, nil
 }
+
+func (us *userService) UpdateUser(userPayload *dto.UpdateUserRequest) (*dto.UpdateUserResponse, errs.Error) {
+	validateErr := helpers.ValidateStruct(userPayload)
+	if validateErr != nil {
+		return nil, validateErr
+	}
+	var user = entity.User{
+		ID: userPayload.ID,
+		FullName: userPayload.FullName,
+		Email: userPayload.Email,
+	}
+	updatedUser, err := us.UserRepo.UpdateUser(&user)
+	if err != nil {
+		return nil, err
+	}
+	
+	response := dto.UpdateUserResponse{
+		ID: updatedUser.ID,
+		FullName: updatedUser.FullName,
+		Email: updatedUser.Email,
+		UpdatedAt: updatedUser.UpdatedAt,
+	}
+	return &response, nil
+} 

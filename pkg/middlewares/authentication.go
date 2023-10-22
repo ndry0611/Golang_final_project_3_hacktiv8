@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"final_project_3/helpers"
+	"final_project_3/pkg/helpers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

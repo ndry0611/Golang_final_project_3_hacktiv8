@@ -1,10 +1,10 @@
 package user_repo
 
 import (
+	"errors"
 	"final_project_3/entity"
 	"final_project_3/pkg/errs"
 	"final_project_3/repository/user_repository"
-	"errors"
 
 	"gorm.io/gorm"
 )
@@ -34,6 +34,15 @@ func (ur *userRepo) FindOneUserByEmail(email string) (*entity.User, errs.Error) 
 			msg := "user with email: " + email + " not found"
 			return nil, errs.NewNotFoundError(msg)
 		}
+	}
+	return &User, nil
+}
+
+func (ur *userRepo) UpdateUser(userPayload *entity.User) (*entity.User, errs.Error) {
+	var User = *userPayload
+	err := ur.db.Model(&User).Updates(map[string]interface{}{"full_name": User.FullName, "email": User.Email}).Error
+	if err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
 	}
 	return &User, nil
 }
