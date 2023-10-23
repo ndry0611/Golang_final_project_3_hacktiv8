@@ -21,8 +21,5 @@ func Authentication() gin.HandlerFunc {
 		}
 		c.Set("user", tokenClaims)
 		c.Next()
-
-		return
-
 	}
 }
