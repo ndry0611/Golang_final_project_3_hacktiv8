@@ -4,6 +4,7 @@ import (
 	"final_project_3/infrastructure/config"
 	"final_project_3/infrastructure/database"
 	"final_project_3/pkg/middlewares"
+	"final_project_3/repository/category_repository/category_repo"
 	"final_project_3/repository/user_repository/user_repo"
 	"final_project_3/service"
 
@@ -20,6 +21,10 @@ func StartApp() {
 	userService := service.NewUserService(userRepo)
 	userHandler := NewUserHandler(userService)
 
+	categoryRepo := category_repo.NewCategoryRepo(db)
+	categoryService := service.NewCategoryService(categoryRepo)
+	categoryHandler := NewCategoryHandler(categoryService)
+
 	route := gin.Default()
 
 	userRoute := route.Group("/users")
@@ -30,6 +35,14 @@ func StartApp() {
 		userRoute.Use(middlewares.Authentication())
 		{
 			userRoute.PUT("/update-account", userHandler.UpdateUser)
+		}
+	}
+
+	categoriesRoute := route.Group("/categories")
+	{
+		categoriesRoute.Use(middlewares.Authentication())
+		{
+			categoriesRoute.POST("/", middlewares.AdminAuthorization(), categoryHandler.CreateCategory)
 		}
 	}
 
