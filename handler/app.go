@@ -42,7 +42,10 @@ func StartApp() {
 	{
 		categoriesRoute.Use(middlewares.Authentication())
 		{
-			categoriesRoute.POST("/", middlewares.AdminAuthorization(), categoryHandler.CreateCategory)
+			categoriesRoute.GET("/", categoryHandler.GetCategories)
+			
+			categoriesRoute.Use(middlewares.AdminAuthorization())
+			categoriesRoute.POST("/", categoryHandler.CreateCategory)
 		}
 	}
 

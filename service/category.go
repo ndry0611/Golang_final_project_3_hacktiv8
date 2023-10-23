@@ -14,6 +14,7 @@ type categoryService struct {
 
 type CategoryService interface {
 	CreateCategory(categoryPayload *dto.NewCategoryRequest) (*dto.NewCategoryResponse, errs.Error)
+	GetCategoriesWithTasks() (*[]dto.GetCategoriesResponse, errs.Error)
 }
 
 func NewCategoryService(categoryRepo category_repository.Repository) CategoryService {
@@ -38,4 +39,12 @@ func (cs *categoryService) CreateCategory(categoryPayload *dto.NewCategoryReques
 		CreatedAt: createdCategory.CreatedAt,
 	}
 	return &response, nil
+}
+
+func (cs *categoryService) GetCategoriesWithTasks() (*[]dto.GetCategoriesResponse, errs.Error) {
+	response, err := cs.CategoryRepo.GetCategoriesWithTasks()
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
 }

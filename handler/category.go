@@ -31,3 +31,12 @@ func (ch *categoryHandler) CreateCategory(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, response)
 }
+
+func (ch *categoryHandler) GetCategories(ctx *gin.Context) {
+	response, err := ch.categoryService.GetCategoriesWithTasks()
+	if err != nil {
+		ctx.JSON(err.Status(), err)
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+}
