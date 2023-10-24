@@ -10,4 +10,5 @@ type Repository interface {
 	CreateCategory(categoryPayload *entity.Category) (*entity.Category, errs.Error)
 	GetCategoriesWithTasks() (*[]dto.GetCategoriesResponse, errs.Error)
 	UpdateCategory(categoryPayload *entity.Category) (*entity.Category, errs.Error)
+	DeleteCategory(id int) errs.Error
 }

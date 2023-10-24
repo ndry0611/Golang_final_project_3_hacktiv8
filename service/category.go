@@ -16,6 +16,7 @@ type CategoryService interface {
 	CreateCategory(categoryPayload *dto.NewCategoryRequest) (*dto.NewCategoryResponse, errs.Error)
 	GetCategoriesWithTasks() (*[]dto.GetCategoriesResponse, errs.Error)
 	UpdateCategory(categoryPayload *dto.UpdateCategoryRequest) (*dto.UpdateCategoryResponse, errs.Error)
+	DeleteCategory(id int) errs.Error
 }
 
 func NewCategoryService(categoryRepo category_repository.Repository) CategoryService {
@@ -69,4 +70,12 @@ func (cs *categoryService) UpdateCategory(categoryPayload *dto.UpdateCategoryReq
 		UpdatedAt: updatedCategory.UpdatedAt,
 	}
 	return &response, nil
+}
+
+func (cs *categoryService) DeleteCategory(id int) errs.Error {
+	err := cs.CategoryRepo.DeleteCategory(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

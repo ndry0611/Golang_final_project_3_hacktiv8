@@ -1,10 +1,12 @@
 package category_repo
 
 import (
+	"errors"
 	"final_project_3/dto"
 	"final_project_3/entity"
 	"final_project_3/pkg/errs"
 	"final_project_3/repository/category_repository"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -71,4 +73,16 @@ func (cr *categoryRepo) UpdateCategory(categoryPayload *entity.Category) (*entit
 		return nil, errs.NewInternalServerError(err.Error())
 	}
 	return &Category, nil
+}
+
+func (cr *categoryRepo) DeleteCategory(id int) errs.Error {
+	err := cr.db.Where("id = ?", id).Delete(&entity.Category{}).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			msg := "todo with id: " + strconv.Itoa(id) + " not found"
+			return errs.NewNotFoundError(msg)
+		}
+		return errs.NewInternalServerError("something went wrong")
+	}
+	return nil
 }

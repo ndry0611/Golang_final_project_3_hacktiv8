@@ -65,3 +65,22 @@ func (ch *categoryHandler) UpdateCategory(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, response)
 }
+
+func (ch *categoryHandler) DeleteCategory(ctx *gin.Context) {
+	param := ctx.Param("categoryId")
+	categoryId, errConv := strconv.Atoi(param)
+	if errConv != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": errConv.Error(),
+		})
+		return
+	}
+	err := ch.categoryService.DeleteCategory(categoryId)
+	if err != nil {
+		ctx.JSON(err.Status(), err)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Category has been successfully deleted",
+	})
+}

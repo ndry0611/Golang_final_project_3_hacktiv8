@@ -43,14 +43,13 @@ func StartApp() {
 		categoriesRoute.Use(middlewares.Authentication())
 		{
 			categoriesRoute.GET("/", categoryHandler.GetCategories)
-			
+
 			categoriesRoute.Use(middlewares.AdminAuthorization())
 			categoriesRoute.POST("/", categoryHandler.CreateCategory)
 			categoriesRoute.PATCH("/:categoryId", categoryHandler.UpdateCategory)
+			categoriesRoute.DELETE("/:categoryId", categoryHandler.DeleteCategory)
 		}
 	}
 
 	route.Run(":" + config.GetAppConfig().Port)
 }
-
-
