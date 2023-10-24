@@ -15,6 +15,7 @@ type categoryService struct {
 type CategoryService interface {
 	CreateCategory(categoryPayload *dto.NewCategoryRequest) (*dto.NewCategoryResponse, errs.Error)
 	GetCategoriesWithTasks() (*[]dto.GetCategoriesResponse, errs.Error)
+	UpdateCategory(categoryPayload *dto.UpdateCategoryRequest) (*dto.UpdateCategoryResponse, errs.Error)
 }
 
 func NewCategoryService(categoryRepo category_repository.Repository) CategoryService {
@@ -47,4 +48,25 @@ func (cs *categoryService) GetCategoriesWithTasks() (*[]dto.GetCategoriesRespons
 		return nil, err
 	}
 	return response, nil
+}
+
+func (cs *categoryService) UpdateCategory(categoryPayload *dto.UpdateCategoryRequest) (*dto.UpdateCategoryResponse, errs.Error) {
+	validateErr := helpers.ValidateStruct(categoryPayload)
+	if validateErr != nil {
+		return nil, validateErr
+	}
+	var category = entity.Category{
+		ID:   categoryPayload.ID,
+		Type: categoryPayload.Type,
+	}
+	updatedCategory, err := cs.CategoryRepo.UpdateCategory(&category)
+	if err != nil {
+		return nil, err
+	}
+	response := dto.UpdateCategoryResponse{
+		ID:        updatedCategory.ID,
+		Type:      updatedCategory.Type,
+		UpdatedAt: updatedCategory.UpdatedAt,
+	}
+	return &response, nil
 }

@@ -63,3 +63,12 @@ func (cr *categoryRepo) GetCategoriesWithTasks() (*[]dto.GetCategoriesResponse, 
 	}
 	return &res, nil
 }
+
+func (cr *categoryRepo) UpdateCategory(categoryPayload *entity.Category) (*entity.Category, errs.Error) {
+	var Category = *categoryPayload
+	err := cr.db.Model(&Category).Update("type", Category.Type).Error
+	if err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
+	}
+	return &Category, nil
+}

@@ -46,6 +46,7 @@ func StartApp() {
 			
 			categoriesRoute.Use(middlewares.AdminAuthorization())
 			categoriesRoute.POST("/", categoryHandler.CreateCategory)
+			categoriesRoute.PATCH("/:categoryId", categoryHandler.UpdateCategory)
 		}
 	}
 
