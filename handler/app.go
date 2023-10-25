@@ -60,6 +60,7 @@ func StartApp() {
 	{
 		taskRoute.Use(middlewares.Authentication())
 		{
+			taskRoute.GET("/", taskHandler.GetTasks)
 			taskRoute.POST("/", taskHandler.CreateTask)
 		}
 	}

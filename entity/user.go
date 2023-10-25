@@ -1,8 +1,8 @@
 package entity
 
 import (
-	"final_project_3/pkg/helpers"
 	"final_project_3/pkg/errs"
+	"final_project_3/pkg/helpers"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,6 +16,7 @@ type User struct {
 	Role      string `gorm:"not null;default:member"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
+	Tasks     []Task
 }
 
 func (u *User) BeforeCreate(db *gorm.DB) (err error) {

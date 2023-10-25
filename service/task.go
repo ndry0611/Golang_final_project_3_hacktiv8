@@ -14,6 +14,7 @@ type taskService struct {
 
 type TaskService interface {
 	CreateTask(taskPayload *dto.NewTaskRequest) (*dto.NewTaskResponse, errs.Error)
+	GetTasks() (*[]dto.GetTasksResponse, errs.Error)
 }
 
 func NewTaskService(taskRepo task_repository.Repository) TaskService {
@@ -44,4 +45,12 @@ func (ts *taskService) CreateTask(taskPayload *dto.NewTaskRequest) (*dto.NewTask
 		CreatedAt: createdTask.CreatedAt,
 	}
 	return &response, nil
+}
+
+func (ts *taskService) GetTasks() (*[]dto.GetTasksResponse, errs.Error) {
+	response, err := ts.TaskRepo.GetTasks()
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
 }

@@ -34,3 +34,12 @@ func (th *taskHandler) CreateTask(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, response)
 }
+
+func (th *taskHandler) GetTasks(ctx *gin.Context) {
+	response, err := th.taskService.GetTasks()
+	if err != nil {
+		ctx.JSON(err.Status(), err)
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+}

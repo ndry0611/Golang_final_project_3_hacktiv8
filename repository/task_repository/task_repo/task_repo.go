@@ -1,6 +1,7 @@
 package task_repo
 
 import (
+	"final_project_3/dto"
 	"final_project_3/entity"
 	"final_project_3/pkg/errs"
 	"final_project_3/repository/task_repository"
@@ -23,4 +24,29 @@ func (tr *taskRepo) CreateTask(taskPayload *entity.Task) (*entity.Task, errs.Err
 		return nil, errs.NewInternalServerError(err.Error())
 	}
 	return &Task, nil
+}
+
+func (tr *taskRepo) GetTasks() (*[]dto.GetTasksResponse, errs.Error) {
+	var tasks []entity.Task
+	err := tr.db.Preload("User").Find(&tasks).Error
+	if err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
+	}
+	var res []dto.GetTasksResponse
+	for _, task := range tasks {
+		res = append(res, dto.GetTasksResponse{
+			ID: task.ID,
+			Title: task.Title,
+			Status: task.Status,
+			Description: task.Description,
+			UserID: task.UserID,
+			CategoryID: task.CategoryID,
+			User: dto.GetTaskUser{
+				ID: task.User.ID,
+				Email: task.User.Email,
+				FullName: task.User.FullName,
+			},
+		})
+	}
+	return &res, nil
 }
