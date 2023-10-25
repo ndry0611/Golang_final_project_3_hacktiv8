@@ -5,6 +5,7 @@ import (
 	"final_project_3/infrastructure/database"
 	"final_project_3/pkg/middlewares"
 	"final_project_3/repository/category_repository/category_repo"
+	"final_project_3/repository/task_repository/task_repo"
 	"final_project_3/repository/user_repository/user_repo"
 	"final_project_3/service"
 
@@ -24,6 +25,10 @@ func StartApp() {
 	categoryRepo := category_repo.NewCategoryRepo(db)
 	categoryService := service.NewCategoryService(categoryRepo)
 	categoryHandler := NewCategoryHandler(categoryService)
+
+	taskRepo := task_repo.NewTaskRepo(db)
+	taskService := service.NewTaskService(taskRepo)
+	taskHandler := NewTaskHandler(taskService)
 
 	route := gin.Default()
 
@@ -48,6 +53,14 @@ func StartApp() {
 			categoriesRoute.POST("/", categoryHandler.CreateCategory)
 			categoriesRoute.PATCH("/:categoryId", categoryHandler.UpdateCategory)
 			categoriesRoute.DELETE("/:categoryId", categoryHandler.DeleteCategory)
+		}
+	}
+
+	taskRoute := route.Group("/tasks")
+	{
+		taskRoute.Use(middlewares.Authentication())
+		{
+			taskRoute.POST("/", taskHandler.CreateTask)
 		}
 	}
 
