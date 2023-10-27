@@ -79,7 +79,7 @@ func (cr *categoryRepo) DeleteCategory(id int) errs.Error {
 	err := cr.db.Where("id = ?", id).Delete(&entity.Category{}).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			msg := "todo with id: " + strconv.Itoa(id) + " not found"
+			msg := "category with id: " + strconv.Itoa(id) + " not found"
 			return errs.NewNotFoundError(msg)
 		}
 		return errs.NewInternalServerError("something went wrong")
