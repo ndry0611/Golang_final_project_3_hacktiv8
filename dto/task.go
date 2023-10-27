@@ -37,3 +37,29 @@ type GetTaskUser struct {
 	Email    string `json:"email"`
 	FullName string `json:"full_name"`
 }
+
+type UpdateTaskRequest struct {
+	ID          uint   `json:"id"`
+	Title       string `json:"title" validate:"required"`
+	Description string `json:"description" validate:"required"`
+}
+
+type UpdateTaskStatusRequest struct {
+	ID     uint `json:"id"`
+	Status bool `json:"status" validate:"boolean"`
+}
+
+type UpdateTaskCategoryRequest struct {
+	ID         uint `json:"id"`
+	CategoryID uint `json:"category_id" validate:"required"`
+}
+
+type UpdateTaskResponse struct {
+	ID          uint      `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Status      bool      `json:"status"`
+	UserID      uint      `json:"user_id"`
+	CategoryID  uint      `json:"category_id"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}

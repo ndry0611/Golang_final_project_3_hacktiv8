@@ -30,6 +30,8 @@ func StartApp() {
 	taskService := service.NewTaskService(taskRepo)
 	taskHandler := NewTaskHandler(taskService)
 
+	authorizationService := middlewares.NewAuthorizationService(taskRepo)
+
 	route := gin.Default()
 
 	userRoute := route.Group("/users")
@@ -62,6 +64,11 @@ func StartApp() {
 		{
 			taskRoute.GET("/", taskHandler.GetTasks)
 			taskRoute.POST("/", taskHandler.CreateTask)
+			taskRoute.Use(authorizationService.TaskUpdateAuthorization())
+			taskRoute.PATCH("/update-status/:taskId", taskHandler.UpdateTaskStatus)
+			taskRoute.PATCH("/update-category/:taskId", taskHandler.UpdateTaskCategory)
+			taskRoute.PUT("/:taskId", taskHandler.UpdateTask)
+			taskRoute.DELETE("/:taskId", taskHandler.DeleteTask)
 		}
 	}
 
