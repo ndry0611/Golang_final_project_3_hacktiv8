@@ -69,3 +69,17 @@ func (uh *userHandler) UpdateUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, resp)
 }
+
+func (uh *userHandler) DeleteUser(ctx *gin.Context) {
+	jwtClaims := ctx.MustGet("user").(jwt.MapClaims)
+	userId := uint(jwtClaims["id"].(float64))
+
+	err := uh.userService.DeleteUser(userId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(err.Status(), err)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Your account has been successfully deleted",
+	})
+}

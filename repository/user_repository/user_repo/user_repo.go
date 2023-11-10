@@ -46,3 +46,11 @@ func (ur *userRepo) UpdateUser(userPayload *entity.User) (*entity.User, errs.Err
 	}
 	return &User, nil
 }
+
+func (ur *userRepo) DeleteUser(userId uint) errs.Error {
+	err := ur.db.Delete(&entity.User{}, userId).Error
+	if err != nil {
+		return errs.NewInternalServerError(err.Error())
+	}
+	return nil
+}

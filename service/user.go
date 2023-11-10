@@ -16,6 +16,7 @@ type UserService interface {
 	CreateUser(userPayload *dto.NewUserRequest) (*dto.NewUserResponse, errs.Error)
 	Login(loginPayload *dto.NewLoginRequest) (*dto.NewLoginResponse, errs.Error)
 	UpdateUser(userPayload *dto.UpdateUserRequest) (*dto.UpdateUserResponse, errs.Error)
+	DeleteUser(userId uint) errs.Error
 }
 
 func NewUserService(userRepo user_repository.Repository) UserService {
@@ -91,4 +92,12 @@ func (us *userService) UpdateUser(userPayload *dto.UpdateUserRequest) (*dto.Upda
 		UpdatedAt: updatedUser.UpdatedAt,
 	}
 	return &response, nil
-} 
+}
+
+func (us *userService) DeleteUser(userId uint) errs.Error {
+	err := us.UserRepo.DeleteUser(userId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

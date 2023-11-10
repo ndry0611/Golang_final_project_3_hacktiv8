@@ -42,6 +42,7 @@ func StartApp() {
 		userRoute.Use(middlewares.Authentication())
 		{
 			userRoute.PUT("/update-account", userHandler.UpdateUser)
+			userRoute.DELETE("/delete-account", userHandler.DeleteUser)
 		}
 	}
 
